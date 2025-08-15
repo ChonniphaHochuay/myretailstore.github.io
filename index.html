@@ -19,16 +19,14 @@
     </section>
 
     <footer>
-        <p>&copy; 2025 Your Store</p>
+        <p>&copy; 2025 ร้านถูกดี </p>
     </footer>
 
     <!-- Firebase SDK -->
-    <script type="module">
-        import firebase from "https://www.gstatic.com/firebasejs/9.1.2/firebase-app.js";
-        import "https://www.gstatic.com/firebasejs/9.1.2/firebase-auth.js";
-        import "https://www.gstatic.com/firebasejs/9.1.2/firebase-firestore.js";
-    </script>
-
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
+    
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyBiN4Ym9cRQH_VXWgSA3XOInXuYjD-Joow",
@@ -47,7 +45,9 @@
         // Phone number login code goes here
         const appVerifier = new firebase.auth.RecaptchaVerifier('send-verification', {
             size: 'invisible',
-            callback: function(response) {}
+            callback: function(response) {
+                
+            }
         });
 
         // Send verification code
