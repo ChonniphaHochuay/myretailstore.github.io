@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Store</title>
+    <title>ร้านถูกดี สาขาโนนสูง</title>
 </head>
 <body>
     <header>
-        <h1>Welcome to Your Store!</h1>
+        <h1>Welcome to ร้านถูกดี!</h1>
     </header>
 
     <section id="login">
@@ -51,6 +51,7 @@
         // Send verification code
         document.getElementById("send-verification").addEventListener("click", function() {
             const phoneNumber = document.getElementById("phone-number").value;
+
             const phoneAuthProvider = new firebase.auth.PhoneAuthProvider();
             phoneAuthProvider.verifyPhoneNumber(phoneNumber, appVerifier)
                 .then(function(confirmationResult) {
@@ -58,7 +59,7 @@
                     alert("Verification code sent!");
                 })
                 .catch(function(error) {
-                    alert(error.message);
+                    alert("Error sending verification code : " + error.message);
                 });
         });
 
@@ -73,7 +74,7 @@
                     savePhoneNumber(user.phoneNumber);
                 })
                 .catch(function(error) {
-                    alert(error.message);
+                    alert("Error verifying the code: " + error.message);
                 });
         });
 
