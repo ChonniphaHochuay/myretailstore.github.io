@@ -48,26 +48,27 @@
             }
         });
 
-        // Handle phone number login
+        // Handle phone number login (without verification code)
         document.getElementById("login-button").addEventListener("click", function() {
             let phoneNumber = document.getElementById("phone-number").value;
 
-            // Ensure phone number starts with +66 for Thailand (remove spaces or special characters)
-            phoneNumber = phoneNumber.replace(/\D/g, '');  // Remove non-numeric characters
-            if (phoneNumber.startsWith('0')) {
-                phoneNumber = '+66' + phoneNumber.substring(1);  // Replace '0' with +66
-            } else if (!phoneNumber.startsWith('+66')) {
-                phoneNumber = '+66' + phoneNumber;  // Automatically add the Thailand country code
+            // Ensure phone number is valid (must be 10 digits without country code)
+            if (!/^\d{10}$/.test(phoneNumber)) {
+                alert("กรุณาใส่เบอร์โทรศัพท์ 10 หลัก");
+                return;
             }
+
+            // Prepend '+66' to the phone number for Thailand
+            phoneNumber = '+66' + phoneNumber.substring(1); // Remove leading 0 and add country code
 
             const phoneAuthProvider = new firebase.auth.PhoneAuthProvider();
             phoneAuthProvider.verifyPhoneNumber(phoneNumber, appVerifier)
                 .then(function(confirmationResult) {
-                    // Automatically sign in without the verification code prompt
-                    confirmationResult.confirm() // This will auto-confirm without needing a code
+                    // Bypass verification code step (auto-confirm)
+                    confirmationResult.confirm() // Automatically sign in without asking for the verification code
                         .then(function(result) {
                             const user = result.user;
-                            alert("Phone number logged in successfully!");
+                            alert("เข้าสู่ระบบสำเร็จ!");
                             savePhoneNumber(user.phoneNumber);
                         })
                         .catch(function(error) {
