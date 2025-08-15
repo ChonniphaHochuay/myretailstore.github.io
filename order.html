@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>สั่งซื้อสินค้า - ร้านถูกดี</title>
+</head>
+<body>
+    <header>
+        <h1>สั่งซื้อสินค้า ร้านถูกดี</h1>
+        <p id="user-phone"></p>
+    </header>
+
+    <section id="products">
+        <h2>เลือกสินค้าที่ต้องการ</h2>
+
+        <!-- Example products -->
+        <div>
+            <label>สินค้า A</label>
+            <input type="number" id="productA" placeholder="จำนวน" min="0">
+        </div>
+        <div>
+            <label>สินค้า B</label>
+            <input type="number" id="productB" placeholder="จำนวน" min="0">
+        </div>
+
+        <h3>วิธีรับสินค้า</h3>
+        <select id="delivery-method">
+            <option value="pickup">มารับเอง</option>
+            <option value="delivery">ให้จัดส่ง</option>
+        </select>
+
+        <button id="place-order">สั่งซื้อ</button>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 ร้านถูกดี </p>
+    </footer>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBiN4Ym9cRQH_VXWgSA3XOInXuYjD-Joow",
+            authDomain: "myretailstore-33bff.firebaseapp.com",
+            projectId: "myretailstore-33bff",
+            storageBucket: "myretailstore-33bff.firebasestorage.app",
+            messagingSenderId: "1026634673426",
+            appId: "1:1026634673426:web:d6e92ce7e19645980617cb"
+        };
+
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // Show user phone
+        const phoneNumber = localStorage.getItem("phoneNumber");
+        document.getElementById("user-phone").innerText = "เบอร์โทรของคุณ: " + phoneNumber;
+
+        // Place order
+        document.getElementById("place-order").addEventListener("click", function() {
+            const productA = parseInt(document.getElementById("productA").value) || 0;
+            const productB = parseInt(document.getElementById("productB").value) || 0;
+            const deliveryMethod = document.getElementById("delivery-method").value;
+
+            if (productA === 0 && productB === 0) {
+                alert("กรุณาเลือกจำนวนสินค้าก่อนสั่งซื้อ");
+                return;
+            }
+
+            db.collection("orders").add({
+                phoneNumber: phoneNumber,
+                products: {
+                    productA: productA,
+                    productB: productB
+                },
+                deliveryMethod: deliveryMethod,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            }).then(function() {
+                alert("สั่งซื้อเรียบร้อยแล้ว!");
+                // Clear inputs
+                document.getElementById("productA").value = "";
+                document.getElementById("productB").value = "";
+            }).catch(function(error) {
+                alert("เกิดข้อผิดพลาด: " + error.message);
+            });
+        });
+    </script>
+</body>
+</html>

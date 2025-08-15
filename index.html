@@ -91,6 +91,17 @@
                 console.error("Error adding document: ", error);
             });
         }
+        confirmationResult.confirm()
+            .then(function(result) {
+                const user = result.user;
+                alert("เข้าสู่ระบบสำเร็จ!");
+                savePhoneNumber(user.phoneNumber);
+                // Save login info in localStorage to use in order page
+                localStorage.setItem("phoneNumber", user.phoneNumber);
+                // Redirect to order page
+                window.location.href = "order.html";
+    })
+
     </script>
 </body>
 </html>
