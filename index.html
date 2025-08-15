@@ -11,11 +11,11 @@
     </header>
 
     <section id="login">
-        <h2>Please enter your phone number to login</h2>
-        <input type="text" id="phone-number" placeholder="Enter phone number" />
-        <button id="send-verification">Send Verification Code</button>
-        <input type="text" id="verification-code" placeholder="Enter verification code" />
-        <button id="verify-code">Verify</button>
+        <h2>กรุณาใส่เบอร์โทรศัพท์ของท่านเพื่อเข้าสู่ระบบ</h2>
+        <input type="text" id="phone-number" placeholder="ใส่เบอร์โทรศัพท์" value="+66" />
+        <button id="send-verification">ส่งรหัสยืนยัน</button>
+        <input type="text" id="verification-code" placeholder="ใส่รหัสยืนยัน" />
+        <button id="verify-code">ยืนยัน</button>
     </section>
 
     <footer>
@@ -50,7 +50,15 @@
 
         // Send verification code
         document.getElementById("send-verification").addEventListener("click", function() {
-            const phoneNumber = document.getElementById("phone-number").value;
+            let phoneNumber = document.getElementById("phone-number").value;
+
+            // Ensure phone number starts with +66 for Thailand (remove spaces or special characters)
+            phoneNumber = phoneNumber.replace(/\D/g, '');  // Remove non-numeric characters
+            if (phoneNumber.startsWith('0')) {
+                phoneNumber = '+66' + phoneNumber.substring(1);  // Replace '0' with +66
+            } else if (!phoneNumber.startsWith('+66')) {
+                phoneNumber = '+66' + phoneNumber;  // Automatically add the Thailand country code
+            }
 
             const phoneAuthProvider = new firebase.auth.PhoneAuthProvider();
             phoneAuthProvider.verifyPhoneNumber(phoneNumber, appVerifier)
