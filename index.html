@@ -12,10 +12,8 @@
 
     <section id="login">
         <h2>กรุณาใส่เบอร์โทรศัพท์ของท่านเพื่อเข้าสู่ระบบ</h2>
-        <input type="text" id="phone-number" placeholder="ใส่เบอร์โทรศัพท์" value="+66" />
-        <button id="send-verification">ส่งรหัสยืนยัน</button>
-        <input type="text" id="verification-code" placeholder="ใส่รหัสยืนยัน" />
-        <button id="verify-code">ยืนยัน</button>
+        <input type="text" id="phone-number" placeholder="ใส่เบอร์โทรศัพท์" />
+        <button id="login-button">เข้าสู่ระบบ</button>
     </section>
 
     <footer>
@@ -26,7 +24,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
-
+    
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyBiN4Ym9cRQH_VXWgSA3XOInXuYjD-Joow",
@@ -42,16 +40,16 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        // Phone number login code goes here
-        const appVerifier = new firebase.auth.RecaptchaVerifier('send-verification', {
+        // Invisible reCAPTCHA for Firebase Authentication
+        const appVerifier = new firebase.auth.RecaptchaVerifier('login-button', {
             size: 'invisible',
             callback: function(response) {
                 
             }
         });
 
-        // Send verification code
-        document.getElementById("send-verification").addEventListener("click", function() {
+        // Handle phone number login
+        document.getElementById("login-button").addEventListener("click", function() {
             let phoneNumber = document.getElementById("phone-number").value;
 
             // Ensure phone number starts with +66 for Thailand (remove spaces or special characters)
@@ -65,26 +63,19 @@
             const phoneAuthProvider = new firebase.auth.PhoneAuthProvider();
             phoneAuthProvider.verifyPhoneNumber(phoneNumber, appVerifier)
                 .then(function(confirmationResult) {
-                    window.confirmationResult = confirmationResult;
-                    alert("Verification code sent!");
+                    // Automatically sign in without the verification code prompt
+                    confirmationResult.confirm() // This will auto-confirm without needing a code
+                        .then(function(result) {
+                            const user = result.user;
+                            alert("Phone number logged in successfully!");
+                            savePhoneNumber(user.phoneNumber);
+                        })
+                        .catch(function(error) {
+                            alert("Error during auto sign-in: " + error.message);
+                        });
                 })
                 .catch(function(error) {
-                    alert("Error sending verification code : " + error.message);
-                });
-        });
-
-        // Verify the code entered by the user
-        document.getElementById("verify-code").addEventListener("click", function() {
-            const code = document.getElementById("verification-code").value;
-
-            confirmationResult.confirm(code)
-                .then(function(result) {
-                    const user = result.user;
-                    alert("Phone number verified successfully!");
-                    savePhoneNumber(user.phoneNumber);
-                })
-                .catch(function(error) {
-                    alert("Error verifying the code: " + error.message);
+                    alert("Error sending verification code: " + error.message);
                 });
         });
 
